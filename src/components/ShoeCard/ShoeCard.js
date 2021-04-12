@@ -31,16 +31,46 @@ const ShoeCard = ({
       ? 'new-release'
       : 'default'
 
+  const LABELS = {
+    "on-sale": {
+      content: "Sale",
+      backgroundColor: COLORS.secondary,
+      textDecoration: "line-through",
+      color: COLORS.gray[500],
+    },
+    "new-release": {
+      content: "Just Released!",
+      backgroundColor: COLORS.primary,
+    },
+    default: {
+      display: "none",
+      textDecoration: "none",
+    },
+  };
+
   return (
     <Link href={`/shoe/${slug}`}>
       <Wrapper>
         <ImageWrapper>
+          <Label
+            style={{ "--backgroundColor": LABELS[variant].backgroundColor }}
+          >
+            {LABELS[variant].content}
+          </Label>
           <Image alt="" src={imageSrc} />
         </ImageWrapper>
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
-          <Price>{formatPrice(price)}</Price>
+          <Price
+            style={{
+              "--color": LABELS[variant].color,
+              "--textDecoration": LABELS[variant].textDecoration,
+            }}
+          >
+            {formatPrice(price)}
+          </Price>{" "}
+          {salePrice ? <SalePrice>{formatPrice(salePrice)}</SalePrice> : null}
         </Row>
         <Row>
           <ColorInfo>{pluralize("Color", numOfColors)}</ColorInfo>
@@ -63,11 +93,25 @@ const ImageWrapper = styled.div`
   position: relative;
 `;
 
+const Label = styled.div`
+  position: absolute;
+  top: 12px;
+  right: -4px;
+  font-size: 14px;
+  font-family: Raleway;
+  line-height: 16px;
+  padding: 11px 7px 9px 9px;
+  border-radius: 2px;
+  background-color: var(--backgroundColor);
+  color: white;
+`;
+
 const Image = styled.img`
   width: 100%;
 `;
 
 const Row = styled.div`
+  position: relative;
   font-size: 1rem;
   display: flex;
   justify-content: space-between;
@@ -79,13 +123,19 @@ const Name = styled.h3`
   color: ${COLORS.gray[900]};
 `;
 
-const Price = styled.span``;
+const Price = styled.span`
+  text-decoration: var(--textDecoration);
+  color: var(--color);
+`;
 
 const ColorInfo = styled.p`
   color: ${COLORS.gray[700]};
 `;
 
 const SalePrice = styled.span`
+  position: absolute;
+  left: 90%;
+  top: 95%;
   font-weight: ${WEIGHTS.medium};
   color: ${COLORS.primary};
 `;
